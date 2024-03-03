@@ -1,3 +1,6 @@
 game/
 a2c/
 data/
+models/
+plots/
+logs/
