@@ -12,8 +12,10 @@ from a2c_scripted_bot_example import MyScriptedBot
 
 import botbowl
 from botbowl.ai.env import BotBowlEnv, RewardWrapper, EnvConf, ScriptedActionWrapper, BotBowlWrapper, PPCGWrapper
-from a2c_agent import A2CAgent, CNNPolicy
-from a2c_env import A2C_Reward, a2c_scripted_actions
+#from botbowl.examples import a2c
+from game.botbowl.examples.a2c import a2c_agent
+from game.botbowl.examples.a2c.a2c_agent import A2CAgent, CNNPolicy
+from game.botbowl.examples.a2c.a2c_env import A2C_Reward, a2c_scripted_actions
 from botbowl.ai.layers import *
 import numpy as np
 

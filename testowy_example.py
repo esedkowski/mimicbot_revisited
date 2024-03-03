@@ -18,10 +18,12 @@ import numpy as np
 
 import csv
 
+from setup import env_size
+
 #from test1 import testowa
 
 # Environment
-env_size = 11  # Options are 1,3,5,7,11
+env_size = env_size  # Options are 1,3,5,7,11
 env_name = f"botbowl-{env_size}"
 env_conf = EnvConf(size=env_size, pathfinding=False)
 
