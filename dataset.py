@@ -38,7 +38,7 @@ class MimicDataset(Dataset):
 
         return (inputs, outputs)
     
-mimic_dataset = MimicDataset(csv_file='.\\test\\data.csv',
+mimic_dataset = MimicDataset(csv_file='.\\data\\data.csv',
                                     root_dir='')
 
 mimic_dataloader = DataLoader(mimic_dataset, batch_size=1, shuffle=True, num_workers=0)

@@ -14,7 +14,7 @@ from botbowl.ai.env import BotBowlEnv, RewardWrapper, EnvConf, ScriptedActionWra
 
 # from a2c_agent import A2CAgent, CNNPolicy
 
-from a2c_env import A2C_Reward, a2c_scripted_actions
+from a2c.a2c_env import A2C_Reward, a2c_scripted_actions
 from botbowl.ai.layers import *
 import numpy as np
 
@@ -31,7 +31,7 @@ from torch.utils.data import Dataset, DataLoader
 
 from dataset import MimicDataset, mimic_dataset, mimic_dataloader
 
-from testowy_agent import CNNPolicy
+from a2c_agent_reworked import CNNPolicy
 
 
 # Environment
@@ -53,7 +53,7 @@ def make_env():
 
 # Training configuration
 num_steps = 1000000
-num_processes = 1
+num_processes = 8
 steps_per_update = 20
 learning_rate = 0.001
 gamma = 0.99
@@ -149,6 +149,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         # values, actions = model.act(X['spatial_obs'], X['non_spatial_obs'], X['mask'], False, None, None, None)
         for i in range (X['spatial_obs'].size()[0]):
             actions = model(X['spatial_obs'][i], X['non_spatial_obs'][i])
+            #print(type(actions))
             loss = loss_fn(actions, y['action_probs'][i])
         #values, actions = model.act(X['spatial_obs'], X['non_spatial_obs'], X['mask'], False, None, None, None)
         #loss = loss_fn(values, y['values']) + loss_fn(actions, y['action_probs'])
@@ -221,13 +222,13 @@ def main():
 
 
 
-    epochs = 2
+    epochs = 5
     for t in range(epochs):
         print(f"Epoch {t+1}\n-------------------------------")
         train_loop(train_dataloader, ac_agent, loss_fn, optimizer)
         test_loop(test_dataloader, ac_agent, loss_fn)
     print("Done!")
-    torch.save(ac_agent.state_dict(), "saved.pt")
+    torch.save(ac_agent, "saved.pt")
 
 #def main():
 #    pass

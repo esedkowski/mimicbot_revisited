@@ -11,8 +11,8 @@ from torch.autograd import Variable
 
 import botbowl
 from botbowl.ai.env import BotBowlEnv, RewardWrapper, EnvConf, ScriptedActionWrapper, BotBowlWrapper, PPCGWrapper
-from a2c_agent import A2CAgent, CNNPolicy
-from a2c_env import A2C_Reward, a2c_scripted_actions
+from a2c_agent_TEST import A2CAgent, CNNPolicy
+from a2c.a2c_env import A2C_Reward, a2c_scripted_actions
 from botbowl.ai.layers import *
 import numpy as np
 
@@ -254,7 +254,7 @@ def main():
                          actions=action_space)
     
     
-    ac_agent.load_state_dict(torch.load("saved.pt"))
+    #ac_agent.load_state_dict(torch.load("saved.pt"))
     ac_agent.eval()
 
     # OPTIMIZER
@@ -319,7 +319,8 @@ def main():
                 Variable(memory.spatial_obs[step]),
                 Variable(memory.non_spatial_obs[step]),
                 Variable(memory.action_masks[step]),
-                gut, file_num, lista, step)
+                #gut, file_num, lista, step)
+                )
 
             action_objects = (action[0] for action in actions.numpy())
 

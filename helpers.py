@@ -65,7 +65,7 @@ def save_data(spatial_inputs, non_spatial_input, action_mask, file_num, action):
             #print(non_spatial_obs.size())
             #print(spatial_obs.size())
 
-            i_file = f"C:\\roboczy\\botbow\\test\\in_{file_num}.pt"
+            i_file = f"\\data\\in_{file_num}.pt"
             i_dict = {'spatial_obs' : spatial_obs, 'non_spatial_obs' : non_spatial_obs, 'mask' : mask}
             #print(type(i_dict['spatial_obs']), i_dict['spatial_obs'].size())
             #input()
@@ -73,13 +73,13 @@ def save_data(spatial_inputs, non_spatial_input, action_mask, file_num, action):
 
             
 
-            o_file = f"C:\\roboczy\\botbow\\test\\out_{file_num}.pt"
+            o_file = f"C:\\data\\out_{file_num}.pt"
             #print("OUTPUT:", action.detach()[0])
             o_dict = {'action_probs' : action.detach()}
 
             torch.save(o_dict, o_file)
 
-            with open('C:\\roboczy\\botbow\\test\\data.csv', 'a', newline='') as csvfile:
+            with open('C:data\\data.csv', 'a', newline='') as csvfile:
                 spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 spamwriter.writerow([i_file, o_file])
 

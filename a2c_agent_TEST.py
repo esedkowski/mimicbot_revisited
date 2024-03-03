@@ -12,8 +12,6 @@ from botbowl.ai.env import EnvConf, BotBowlEnv
 from examples.a2c.a2c_env import a2c_scripted_actions
 from botbowl.ai.layers import *
 
-import csv
-
 # Architecture
 model_name = '260d8284-9d44-11ec-b455-faffc23fefdb'
 env_name = f'botbowl-11'
@@ -55,14 +53,11 @@ class CNNPolicy(nn.Module):
         self.critic.weight.data.mul_(relu_gain)
 
     def forward(self, spatial_input, non_spatial_input):
-
-        #print(non_spatial_input.size())
-        #print(spatial_input.size())
         """
         The forward functions defines how the data flows through the graph (layers)
         """
         # Spatial input through two convolutional layers
-        #print()
+
         x1 = self.conv1(spatial_input)
         x1 = F.relu(x1)
         x1 = self.conv2(x1)
@@ -88,64 +83,10 @@ class CNNPolicy(nn.Module):
         actor = self.actor(x3)
 
         # return value, policy
-        #return value, actor
-        return actor
+        return value, actor
 
-    def act(self, spatial_inputs, non_spatial_input, action_mask, gut, file_num, lista, step):
-
-        '''
-        Added
-        '''
-        if gut:
-            #print("TEST")
-            #print(type(spatial_inputs), spatial_inputs.size())
-            #input()
-
-            spatial_obs=spatial_inputs
-            non_spatial_obs=non_spatial_input
-            mask=action_mask
-            #spatial_inputs = spatial_inputs[None, :]
-            #non_spatial_input = non_spatial_input[None, :]
-            #spatial_obs=torch.from_numpy(spatial_inputs).float()
-            #non_spatial_obs=torch.from_numpy(non_spatial_input).float()
-            #mask=torch.from_numpy(action_mask).float()
-
-            i_file = f"data\\in_{file_num}.pt"
-            i_dict = {'spatial_obs' : spatial_obs, 'non_spatial_obs' : non_spatial_obs, 'mask' : mask}
-            #print(type(i_dict['spatial_obs']), i_dict['spatial_obs'].size())
-            #input()
-            torch.save(i_dict, i_file)
-
-            _, actions = self(spatial_inputs, non_spatial_input)
-
-            o_file = f"data\\out_{file_num}.pt"
-            #print("OUTPUT:", actions.detach()[0])
-            o_dict = {'action_probs' : actions.detach()}
-
-            torch.save(o_dict, o_file)
-
-            with open('data\\data.csv', 'a', newline='') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                spamwriter.writerow([i_file, o_file])
-            lista[i_file] = step
-        '''
-        End added
-        '''
-
+    def act(self, spatial_inputs, non_spatial_input, action_mask):
         values, action_probs = self.get_action_probs(spatial_inputs, non_spatial_input, action_mask=action_mask)
-
-
-
-        '''
-        Added
-        '''
-
-        '''
-        End added
-        '''
-
-        #print(action_probs.size())
-
         actions = action_probs.multinomial(1)
         # In rare cases, multinomial can  sample an action with p=0, so let's avoid that
         for i, action in enumerate(actions):
@@ -153,21 +94,6 @@ class CNNPolicy(nn.Module):
             while not action_mask[i][correct_action]:
                 correct_action = action_probs[i].multinomial(1)
             actions[i] = correct_action
-
-        #print(actions)
-        
-        #test = torch.zeros([1, 534])
-        #test[0][action] = 1
-
-        #test1 = test.multinomial(1)
-        # In rare cases, multinomial can  sample an action with p=0, so let's avoid that
-        #for i, action in enumerate(test1):
-        #    correct_action = action
-        #    while not action_mask[i][correct_action]:
-        #        correct_action = action_probs[i].multinomial(1)
-        #    actions[i] = correct_action
-        #print(actions)
-        
         return values, actions
 
     def evaluate_actions(self, spatial_inputs, non_spatial_input, actions, actions_mask):
@@ -196,7 +122,7 @@ class A2CAgent(Agent):
     def __init__(self, name,
                  env_conf: EnvConf,
                  scripted_func: Callable[[Game], Optional[Action]] = None,
-                 filename=model_filename):
+                 filename="saved.pt"):
         super().__init__(name)
         self.env = BotBowlEnv(env_conf)
 
@@ -204,7 +130,7 @@ class A2CAgent(Agent):
         self.action_queue = []
 
         # MODEL
-        self.policy = torch.load(filename)
+        self.policy = torch.load('saved.pt')
         self.policy.eval()
         self.end_setup = False
 
